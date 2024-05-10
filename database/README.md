@@ -10,3 +10,5 @@ Replace
 ```bash
 python3 -m seed_db
 ```
+
+![image](https://github.com/aww2539/IPaC-Test-v2/assets/52324276/de52983f-8679-4298-be6b-01cc442f2058)
