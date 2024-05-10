@@ -6,7 +6,6 @@
 Create a `.env` file from `.env.example` and alter variables accordingly.
 
 #### Run Script
-Replace 
 ```bash
 python3 -m seed_db
 ```
