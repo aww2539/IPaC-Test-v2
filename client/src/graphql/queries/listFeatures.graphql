@@ -1,0 +1,18 @@
+query listFeatures($filter: TableFeaturesFilterInput, $limit: Int, $nextToken: String, $orderBy: [OrderByFeaturesInput]){
+    listFeatures(filter: $filter, limit: $limit, nextToken: $nextToken, orderBy: $orderBy){
+        features {
+            category_id
+            category_sid
+            display_name
+            ep_keywords
+            id
+            is_deleted
+            optional_description
+            optional_end_date
+            sid
+            start_date
+            status_code
+        }
+        nextToken
+    }
+}

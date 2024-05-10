@@ -1,0 +1,308 @@
+schema {
+  query: Query
+}
+
+type Categories {
+  id: Int!
+  is_resource_category: Boolean
+  name: String
+  optional_description: String
+  optional_display_description: String
+  sid: Int
+  sort_order: Int
+}
+
+type CategoriesConnection {
+  categories: [Categories]
+  nextToken: String
+}
+
+type CategorySids {
+  category_id: Int
+  id: Int!
+}
+
+type FeatureSids {
+  feature_id: Int
+  id: Int!
+}
+
+type Features {
+  category_id: Int
+  category_sid: Int
+  display_name: String
+  ep_keywords: [String]
+  id: Int!
+  is_deleted: Boolean
+  optional_description: String
+  optional_end_date: String
+  sid: Int
+  start_date: String
+  status_code: String
+}
+
+type FeaturesConnection {
+  features: [Features]
+  nextToken: String
+}
+
+type Query {
+  getCategory(id: Int!): Categories
+  getCategorySid(id: Int!): CategorySids
+  getFeature(id: Int!): Features
+  getFeatureSid(id: Int!): FeatureSids
+  listCategories(filter: TableCategoriesFilterInput, limit: Int, nextToken: String, orderBy: [OrderByCategoriesInput]): CategoriesConnection
+  listFeatures(filter: TableFeaturesFilterInput, limit: Int, nextToken: String, orderBy: [OrderByFeaturesInput]): FeaturesConnection
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+input ModelSizeInput {
+  between: [Int]
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+}
+
+input OrderByCategoriesInput {
+  id: ModelSortDirection
+  is_resource_category: ModelSortDirection
+  name: ModelSortDirection
+  optional_description: ModelSortDirection
+  optional_display_description: ModelSortDirection
+  sid: ModelSortDirection
+  sort_order: ModelSortDirection
+}
+
+input OrderByFeaturesInput {
+  category_id: ModelSortDirection
+  category_sid: ModelSortDirection
+  display_name: ModelSortDirection
+  ep_keywords: ModelSortDirection
+  id: ModelSortDirection
+  is_deleted: ModelSortDirection
+  optional_description: ModelSortDirection
+  optional_end_date: ModelSortDirection
+  sid: ModelSortDirection
+  start_date: ModelSortDirection
+  status_code: ModelSortDirection
+}
+
+input TableBooleanFilterInput {
+  attributeExists: Boolean
+  eq: Boolean
+  ne: Boolean
+}
+
+input TableCategoriesConditionInput {
+  and: [TableCategoriesConditionInput]
+  is_resource_category: TableBooleanFilterInput
+  name: TableStringFilterInput
+  not: [TableCategoriesConditionInput]
+  optional_description: TableStringFilterInput
+  optional_display_description: TableStringFilterInput
+  or: [TableCategoriesConditionInput]
+  sid: TableIntFilterInput
+  sort_order: TableIntFilterInput
+}
+
+input TableCategoriesFilterInput {
+  and: [TableCategoriesFilterInput]
+  id: TableIntFilterInput
+  is_resource_category: TableBooleanFilterInput
+  name: TableStringFilterInput
+  not: [TableCategoriesFilterInput]
+  optional_description: TableStringFilterInput
+  optional_display_description: TableStringFilterInput
+  or: [TableCategoriesFilterInput]
+  sid: TableIntFilterInput
+  sort_order: TableIntFilterInput
+}
+
+input TableFeaturesConditionInput {
+  and: [TableFeaturesConditionInput]
+  category_id: TableIntFilterInput
+  category_sid: TableIntFilterInput
+  display_name: TableStringFilterInput
+  ep_keywords: TableStringFilterInput
+  is_deleted: TableBooleanFilterInput
+  not: [TableFeaturesConditionInput]
+  optional_description: TableStringFilterInput
+  optional_end_date: TableStringFilterInput
+  or: [TableFeaturesConditionInput]
+  sid: TableIntFilterInput
+  start_date: TableStringFilterInput
+  status_code: TableStringFilterInput
+}
+
+input TableFeaturesFilterInput {
+  and: [TableFeaturesFilterInput]
+  category_id: TableIntFilterInput
+  category_sid: TableIntFilterInput
+  display_name: TableStringFilterInput
+  ep_keywords: TableStringFilterInput
+  id: TableIntFilterInput
+  is_deleted: TableBooleanFilterInput
+  not: [TableFeaturesFilterInput]
+  optional_description: TableStringFilterInput
+  optional_end_date: TableStringFilterInput
+  or: [TableFeaturesFilterInput]
+  sid: TableIntFilterInput
+  start_date: TableStringFilterInput
+  status_code: TableStringFilterInput
+}
+
+input TableIntFilterInput {
+  attributeExists: Boolean
+  between: [Int]
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+}
+
+input TableStringFilterInput {
+  attributeExists: Boolean
+  beginsWith: String
+  between: [String]
+  contains: String
+  eq: String
+  ge: String
+  gt: String
+  le: String
+  lt: String
+  ne: String
+  size: ModelSizeInput
+}
+
+#  input UpdateCategoriesInput {
+# 	id: Int!
+# 	optional_description: String
+# 	sid: UpdateCategorySidsInput
+# 	sort_order: Int
+# 	name: String
+# 	is_resource_category: Boolean
+# 	optional_display_description: String
+# }
+# input UpdateCategorySidsInput {
+# 	id: Int!
+# 	category_id: Int
+# }
+# input UpdateFeatureSidsInput {
+# 	id: Int!
+# 	feature_id: Int
+# }
+# input UpdateFeaturesInput {
+# 	id: Int!
+# 	ep_keywords: [String]
+# 	is_deleted: Boolean
+# 	optional_description: String
+# 	status_code: String
+# 	category_id: UpdateCategoriesInput
+# 	category_sid: UpdateCategorySidsInput
+# 	sid: UpdateFeatureSidsInput
+# 	start_date: String
+# 	optional_end_date: String
+# 	display_name: String
+# }
+# type Mutation {
+# 	createCategorySids(input: CreateCategorySidsInput!): CategorySids
+# 	updateCategorySids(input: UpdateCategorySidsInput!, condition: TableCategorySidsConditionInput): CategorySids
+# 	deleteCategorySids(input: DeleteCategorySidsInput!, condition: TableCategorySidsConditionInput): CategorySids
+# 	createFeatureSids(input: CreateFeatureSidsInput!): FeatureSids
+# 	updateFeatureSids(input: UpdateFeatureSidsInput!, condition: TableFeatureSidsConditionInput): FeatureSids
+# 	deleteFeatureSids(input: DeleteFeatureSidsInput!, condition: TableFeatureSidsConditionInput): FeatureSids
+# 	createCategories(input: CreateCategoriesInput!): Categories
+# 	updateCategories(input: UpdateCategoriesInput!, condition: TableCategoriesConditionInput): Categories
+# 	deleteCategories(input: DeleteCategoriesInput!, condition: TableCategoriesConditionInput): Categories
+# 	createFeatures(input: CreateFeaturesInput!): Features
+# 	updateFeatures(input: UpdateFeaturesInput!, condition: TableFeaturesConditionInput): Features
+# 	deleteFeatures(input: DeleteFeaturesInput!, condition: TableFeaturesConditionInput): Features
+# }
+
+#  input CreateCategoriesInput {
+# 	id: Int
+# 	optional_description: String
+# 	sid: CreateCategorySidsInput
+# 	sort_order: Int
+# 	name: String
+# 	is_resource_category: Boolean
+# 	optional_display_description: String
+# }
+# input CreateCategorySidsInput {
+# 	id: Int
+# 	category_id: Int
+# }
+# input CreateFeatureSidsInput {
+# 	id: Int
+# 	feature_id: Int
+# }
+# input CreateFeaturesInput {
+# 	id: Int
+# 	ep_keywords: [String]!
+# 	is_deleted: Boolean
+# 	optional_description: String
+# 	status_code: String
+# 	category_id: CreateCategoriesInput
+# 	category_sid: CreateCategorySidsInput
+# 	sid: CreateFeatureSidsInput
+# 	start_date: String
+# 	optional_end_date: String
+# 	display_name: String
+# }
+# input DeleteCategoriesInput {
+# 	id: Int!
+# }
+# input DeleteCategorySidsInput {
+# 	id: Int!
+# }
+# input DeleteFeatureSidsInput {
+# 	id: Int!
+# }
+# input DeleteFeaturesInput {
+# 	id: Int!
+# }
+
+#  input OrderByCategorySidsInput {
+# 	id: ModelSortDirection
+# 	category_id: ModelSortDirection
+# }
+# input OrderByFeatureSidsInput {
+# 	id: ModelSortDirection
+# 	feature_id: ModelSortDirection
+# }
+
+#  input TableCategorySidsConditionInput {
+# 	category_id: TableIntFilterInput
+# 	and: [TableCategorySidsConditionInput]
+# 	or: [TableCategorySidsConditionInput]
+# 	not: [TableCategorySidsConditionInput]
+# }
+# input TableCategorySidsFilterInput {
+# 	id: TableIntFilterInput
+# 	category_id: TableIntFilterInput
+# 	and: [TableCategorySidsFilterInput]
+# 	or: [TableCategorySidsFilterInput]
+# 	not: [TableCategorySidsFilterInput]
+# }
+# input TableFeatureSidsConditionInput {
+# 	feature_id: TableIntFilterInput
+# 	and: [TableFeatureSidsConditionInput]
+# 	or: [TableFeatureSidsConditionInput]
+# 	not: [TableFeatureSidsConditionInput]
+# }
+# input TableFeatureSidsFilterInput {
+# 	id: TableIntFilterInput
+# 	feature_id: TableIntFilterInput
+# 	and: [TableFeatureSidsFilterInput]
+# 	or: [TableFeatureSidsFilterInput]
+# 	not: [TableFeatureSidsFilterInput]
+# }

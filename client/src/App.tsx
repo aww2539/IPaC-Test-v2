@@ -8,6 +8,7 @@ import { getAndSetCategoriesAndFeatures } from './utils/apiManager';
 import { Category, Feature } from './utils/types';
 
 const App = () => {
+  console.log(process.env)
   const [categories, setCategories] = useState<Category[]>([])
   const [features, setFeatures] = useState<Feature[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category>()
