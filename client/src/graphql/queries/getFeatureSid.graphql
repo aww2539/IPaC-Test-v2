@@ -1,6 +1,0 @@
-query getFeatureSid($id: Int!){
-    getFeatureSid(id: $id) {
-        feature_id
-        id
-    }
-}

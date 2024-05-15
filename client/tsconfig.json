@@ -14,5 +14,5 @@
       "baseUrl": ".",
       "strict": true,
     },
-    "include": ["src/*"]
+    "include": ["src/*", "../App-backup.tsx"]
 }

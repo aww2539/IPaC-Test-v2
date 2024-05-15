@@ -1,0 +1,13 @@
+query listFeaturesQuery {
+  listFeatures(filter: {category_sid: {eq: 11}, is_deleted: {eq: false}}, limit: 10, orderBy: {display_name: ASC}) {
+    nextToken
+    features {
+      category_sid
+      display_name
+      ep_keywords
+      id
+      is_deleted
+      optional_description
+    }
+  }
+}

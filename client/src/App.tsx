@@ -1,51 +1,85 @@
 import { useEffect, useState } from 'react';
-import { getFeaturesBySearch } from './utils/helperFunctions';
+import { filterFeaturesBySearch } from './utils/helperFunctions';
 import { CategoriesList } from './Modules/Categories/CategoriesList';
 import { Header } from './Modules/Header/Header';
-import { Box } from '@mui/material';
+import { Box, debounce } from '@mui/material';
 import { CategoryFeatures } from './Modules/CategoryFeatures/CategoryFeatures';
-import { getAndSetCategoriesAndFeatures } from './utils/apiManager';
 import { Category, Feature } from './utils/types';
+import { useLazyQuery } from '@apollo/client';
+import { listFeaturesQuery } from './graphql/queries/listFeatures'
+import { useGetCurrentCategories } from './utils/hooks'
 
 const App = () => {
   const [categories, setCategories] = useState<Category[]>([])
-  const [features, setFeatures] = useState<Feature[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category>()
   const [featuresByCategory, setFeaturesByCategory] = useState<Feature[]>([])
   const [search, setSearch] = useState<string>('')
   const [searchResults, setSearchResults] = useState<Feature[]>([])
+  const [featuresToSearch, setFeaturesToSearch] = useState<Feature[]>([])
+  
+  const { categoryData } = useGetCurrentCategories()
 
   useEffect(() => {
-    getAndSetCategoriesAndFeatures(
-      setFeatures, 
-      setSelectedCategory, 
-      setCategories
-    )
-  }, [])
-
-  const getAndSetFeaturesByCategory = () => {
-    const filteredFeatures = features.filter((feature) => {
-      return feature.categorySid?.id === selectedCategory?.sid.id
-    })
-    setFeaturesByCategory(filteredFeatures)
-  }
-
-  useEffect(() => {
-    if (selectedCategory) {
-      getAndSetFeaturesByCategory()
+    if (categoryData) {
+      setCategories(categoryData)
+      setSelectedCategory(categoryData[0])
     }
+  }, [categoryData])
+
+  const [getAndSetFeaturesByCategory, { error }] = useLazyQuery(listFeaturesQuery, { 
+    variables: {
+      filter: {
+        category_sid: {
+          eq: selectedCategory?.sid
+        }, 
+        is_deleted: {
+          eq: false
+        }
+      }, 
+      orderBy: {
+        display_name: 'ASC'
+      }
+    },
+    onCompleted: (response) => {
+      setFeaturesByCategory(response.listFeatures.features)
+    },
+    onError: () => {
+      console.warn(error)
+    }
+  })
+
+  useEffect(() => {
+    getAndSetFeaturesByCategory()
   }, [selectedCategory])
 
-  const handleSearch = () => {
-    const results = getFeaturesBySearch(search, features)
-    setSearchResults(results)
-  }
+  // a debounce would be good with the search
+  const [getAndSetFeaturesBySearch, { data }] = useLazyQuery(listFeaturesQuery, {
+    variables: {
+      orderBy: {
+        display_name: 'ASC',
+      },
+    },
+    onCompleted: (response) => {
+      setFeaturesToSearch(response.listFeatures.features);
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      setFeaturesToSearch(data.listFeatures.features);
+    }
+  }, [data]);
   
   useEffect(() => {
     if (search) {
-      handleSearch()
+      if (featuresToSearch.length) {
+        const filtered = filterFeaturesBySearch(search.toLowerCase(), featuresToSearch);
+        setSearchResults(filtered);
+      } else {
+        getAndSetFeaturesBySearch();
+      }
     }
-  }, [search])
+  }, [search, featuresToSearch]);
 
   return (
     <Box
@@ -79,7 +113,7 @@ const App = () => {
         {categories.length >= 1 && selectedCategory && (
           <CategoriesList 
             categories={categories} 
-            selectedCategorySidId={selectedCategory.sid?.id}
+            selectedCategorySid={selectedCategory.sid}
             setSelectedCategory={setSelectedCategory}
             isSearching={!!!search}
             setSearch={setSearch}

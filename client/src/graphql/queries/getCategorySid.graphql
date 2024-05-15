@@ -1,6 +1,0 @@
-query getCategorySid($id: Int!){
-    getCategorySid(id: $id) {
-        category_id
-        id
-    }
-}

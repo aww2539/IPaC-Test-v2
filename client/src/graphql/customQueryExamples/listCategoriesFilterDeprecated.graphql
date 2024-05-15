@@ -1,0 +1,14 @@
+query listCategoriesQuery {
+  listCategories(orderBy: {sort_order: ASC}, filter: {not: {name: {contains: "DEPRECATED"}}}) {
+    categories {
+      id
+      is_resource_category
+      name
+      sort_order
+      optional_description
+      optional_display_description
+      sid
+    }
+    nextToken
+  }
+}

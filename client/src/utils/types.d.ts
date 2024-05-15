@@ -8,25 +8,26 @@ type Sid = {
 }
 
 export type Category = {
-    sortOrder: number
+    id: number
+    isResourceCategory: boolean
     name: string
     optionalDisplayDescription: string
     optionalDescription: string
-    isResourceCategory: boolean
-    sid: Sid
+    sid: number
+    sortOrder: number
 }
 
 export type Feature = {
-    vid: Vid
-    startDateToEpochMilli: number
-    isDeleted: boolean
+    categoryId: number
+    categorySid: number
     displayName: string
     epKeywords: string[]
-    categorySid: Sid
+    id: number
+    isDeleted: boolean
     optionalEndDate: date
     optionalDescription: string
+    sid: number
     startDate: date
-    sid: Sid
     statusCode: string
-
+    vid: number
 }
