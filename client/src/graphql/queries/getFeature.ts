@@ -1,6 +1,8 @@
-query listFeatures($filter: TableFeaturesFilterInput, $limit: Int, $nextToken: String, $orderBy: [OrderByFeaturesInput]){
-    listFeatures(filter: $filter, limit: $limit, nextToken: $nextToken, orderBy: $orderBy){
-        features {
+import { gql } from '@apollo/client'
+
+export const getFeatureQuery = gql`
+    query getFeature($id: Int!){
+        getFeature(id: $id) {
             category_id
             category_sid
             display_name
@@ -13,6 +15,5 @@ query listFeatures($filter: TableFeaturesFilterInput, $limit: Int, $nextToken: S
             start_date
             status_code
         }
-        nextToken
     }
-}
+`;

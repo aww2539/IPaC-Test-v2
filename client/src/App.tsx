@@ -4,46 +4,79 @@ import { CategoriesList } from './Modules/Categories/CategoriesList';
 import { Header } from './Modules/Header/Header';
 import { Box } from '@mui/material';
 import { CategoryFeatures } from './Modules/CategoryFeatures/CategoryFeatures';
-import { getAndSetCategoriesAndFeatures } from './utils/apiManager';
 import { Category, Feature } from './utils/types';
+import { useLazyQuery } from '@apollo/client';
+import { listFeaturesQuery } from './graphql/queries/listFeatures'
+import { useGetCurrentCategories } from './utils/apiManager'
 
 const App = () => {
   const [categories, setCategories] = useState<Category[]>([])
-  const [features, setFeatures] = useState<Feature[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category>()
   const [featuresByCategory, setFeaturesByCategory] = useState<Feature[]>([])
   const [search, setSearch] = useState<string>('')
   const [searchResults, setSearchResults] = useState<Feature[]>([])
+  
+  const { categoryData } = useGetCurrentCategories()
 
   useEffect(() => {
-    getAndSetCategoriesAndFeatures(
-      setFeatures, 
-      setSelectedCategory, 
-      setCategories
-    )
-  }, [])
-
-  const getAndSetFeaturesByCategory = () => {
-    const filteredFeatures = features.filter((feature) => {
-      return feature.categorySid?.id === selectedCategory?.sid.id
-    })
-    setFeaturesByCategory(filteredFeatures)
-  }
-
-  useEffect(() => {
-    if (selectedCategory) {
-      getAndSetFeaturesByCategory()
+    if (categoryData) {
+      setCategories(categoryData)
+      setSelectedCategory(categoryData[0])
     }
+  }, [categoryData])
+
+  const [getAndSetFeaturesByCategory, { loading, error }] = useLazyQuery(listFeaturesQuery, { 
+    variables: {
+      filter: {
+        category_sid: {
+          eq: selectedCategory?.sid
+        }, 
+        is_deleted: {
+          eq: false
+        }
+      }, 
+      orderBy: {
+        display_name: 'ASC'
+      }
+    },
+    onCompleted: (response) => {
+      setFeaturesByCategory(response.listFeatures.features)
+    },
+    onError: () => {
+      console.warn(error)
+    }
+  })
+
+  useEffect(() => {
+    getAndSetFeaturesByCategory()
   }, [selectedCategory])
 
-  const handleSearch = () => {
-    const results = getFeaturesBySearch(search, features)
-    setSearchResults(results)
-  }
+  // probably have to write a custom resolver on appsync to handle array_contains from graphql -> postgres for the ep_keywords field
+  // but basic functionality should be fully swapped over to graphql at that point
+  const [getAndSetFeaturesBySearch] = useLazyQuery(listFeaturesQuery, { 
+    variables: {
+      filter: {
+        display_name: {
+          contains: search
+        }, 
+        or: {
+          ep_keywords: {
+            arrayContains: search
+          }
+        }
+      }, 
+      orderBy: {
+        display_name: 'ASC'
+      }
+    },
+    onCompleted: (response) => {
+      setSearchResults(response.listFeatures.features)
+    }
+  })
   
   useEffect(() => {
     if (search) {
-      handleSearch()
+      getAndSetFeaturesBySearch()
     }
   }, [search])
 
@@ -79,7 +112,7 @@ const App = () => {
         {categories.length >= 1 && selectedCategory && (
           <CategoriesList 
             categories={categories} 
-            selectedCategorySidId={selectedCategory.sid?.id}
+            selectedCategorySid={selectedCategory.sid}
             setSelectedCategory={setSelectedCategory}
             isSearching={!!!search}
             setSearch={setSearch}

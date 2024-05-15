@@ -1,23 +1,17 @@
-import { SetStateAction } from "react"
-import { filterAndSortData } from "./helperFunctions"
-import { Feature, Category } from "./types"
+import { useQuery } from '@apollo/client'
+import { listCategoriesQuery } from '../graphql/queries/listCategories'
 
-type SetState<Type> = { (value: SetStateAction<Type>): void; (arg0: Type): void };
+// maybe rename this file to hooks.ts?
+export const useGetCurrentCategories = () => {
+  const { data, loading, error } = useQuery(listCategoriesQuery, { variables: {
+    filter: {
+      not: {
+        name: {
+          contains: "DEPRECATED"
+        }
+      }
+    }
+  }})
 
-export const getAndSetCategoriesAndFeatures = async (
-  setFeatures: SetState<Feature[]>,
-  setSelectedCategory: SetState<Category | undefined>,
-  setCategories: SetState<Category[]>
-) => {
-  try {
-  const response = await fetch('./FeaturesEndpointResponse.json')
-  const { data } = await response.json()
-  const { currentCategories, currentFeatures } = filterAndSortData(data)
-
-  setFeatures(currentFeatures)
-  setSelectedCategory(currentCategories[0])
-  setCategories(currentCategories)
-  } catch (error) {
-    console.trace(`Error fetching categories/features: ${error}`)
-  }
+  return { categoryData: data?.listCategories.categories, loading, error }
 }

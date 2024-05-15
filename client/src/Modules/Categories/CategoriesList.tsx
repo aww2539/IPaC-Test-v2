@@ -3,7 +3,7 @@ import { Category } from "src/utils/types"
 
 type CategoryListProps = {
     categories: Category[]
-    selectedCategorySidId: number
+    selectedCategorySid: number
     setSelectedCategory: (category: Category) => void
     isSearching: boolean
     setSearch: (searchString: string) => void
@@ -11,20 +11,20 @@ type CategoryListProps = {
 
 export const CategoriesList = ({ 
     categories, 
-    selectedCategorySidId, 
+    selectedCategorySid, 
     setSelectedCategory, 
     isSearching, 
     setSearch 
 }: CategoryListProps) => {
 
     const currentCategoryColor = (categorySidId: number) => {
-        if (categorySidId === selectedCategorySidId && isSearching) {
+        if (categorySidId === selectedCategorySid && isSearching) {
             return '#828282'
         }
     }
 
     const hoverColor = (categorySidId: number) => {
-        if (categorySidId === selectedCategorySidId) {
+        if (categorySidId === selectedCategorySid) {
             return {}
         } else {
             return { cursor: 'pointer', backgroundColor: '#e0e0e0' }
@@ -36,14 +36,14 @@ export const CategoriesList = ({
             <Stack direction='column' spacing={1} className='category-list'>
                 {categories.map((category) => (
                     <Paper 
-                        key={category.sid.id}
+                        key={category.sid}
                         className='category-list-item'
                         sx={{ 
                             fontWeight: 'bold',
                             paddingX: '15px', 
                             paddingY: '15px',
-                            background: `${currentCategoryColor(category.sid.id)}`,
-                            ':hover': { ...hoverColor(category.sid.id) },
+                            background: `${currentCategoryColor(category.sid)}`,
+                            ':hover': { ...hoverColor(category.sid) },
                             "&:active": {
                                 boxShadow: 'none',
                                 background: '#828282'

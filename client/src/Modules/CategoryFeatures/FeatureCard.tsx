@@ -13,7 +13,7 @@ export const FeatureCard = ({ feature }: FeatureCardProps) => {
     }
 
     return (
-        <Card key={feature.sid.id} sx={{ height: '250px'}}>
+        <Card key={feature.sid} sx={{ height: '250px'}}>
             <CardContent>
                 <Typography variant='h5' align='center' sx={{ margin: 1 }}>
                     {startCase(feature.displayName)}

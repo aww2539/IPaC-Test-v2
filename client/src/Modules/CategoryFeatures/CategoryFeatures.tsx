@@ -22,7 +22,7 @@ export const CategoryFeatures = ({ selectedCategory, featuresByCategory, search,
             )}
 
             {featuresToDisplay?.map((feature: Feature) => (
-                <Grid item xs={4} key={feature.sid.id}>
+                <Grid item xs={4} key={feature.sid}>
                     <FeatureCard feature={feature} />
                 </Grid>
                 

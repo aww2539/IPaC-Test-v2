@@ -240,6 +240,7 @@ export type TableStringFilterInput = {
   ne?: InputMaybe<Scalars['String']['input']>;
   notContains?: InputMaybe<Scalars['String']['input']>;
   size?: InputMaybe<ModelSizeInput>;
+  arrayContains?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type ListCategoriesQueryVariables = Exact<{

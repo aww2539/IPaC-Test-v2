@@ -1,0 +1,75 @@
+query getCategorySid($id: Int!){
+    getCategorySid(id: $id) {
+        category_id
+        id
+    }
+}
+
+query getFeatureSid($id: Int!){
+    getFeatureSid(id: $id) {
+        feature_id
+        id
+    }
+}
+
+query getCategory($id: Int!){
+    getCategory(id: $id) {
+        id
+        is_resource_category
+        name
+        optional_description
+        optional_display_description
+        sid 
+        sort_order
+    }
+}
+
+query getFeature($id: Int!){
+    getFeature(id: $id) {
+        category_id
+        category_sid
+        display_name
+        ep_keywords
+        id
+        is_deleted
+        optional_description
+        optional_end_date
+        sid
+        start_date
+        status_code
+    }
+}
+
+query listCategories($filter: TableCategoriesFilterInput, $limit: Int, $nextToken: String, $orderBy: [OrderByCategoriesInput]){
+    listCategories(filter: $filter, limit: $limit, nextToken: $nextToken, orderBy: $orderBy){
+        categories {
+            id
+            is_resource_category
+            name
+            optional_description
+            optional_display_description
+            sid
+            sort_order
+        }
+        nextToken
+    }
+}
+
+query listFeatures($filter: TableFeaturesFilterInput, $limit: Int, $nextToken: String, $orderBy: [OrderByFeaturesInput]){
+    listFeatures(filter: $filter, limit: $limit, nextToken: $nextToken, orderBy: $orderBy){
+        features {
+            category_id
+            category_sid
+            display_name
+            ep_keywords
+            id
+            is_deleted
+            optional_description
+            optional_end_date
+            sid
+            start_date
+            status_code
+        }
+        nextToken
+    }
+}

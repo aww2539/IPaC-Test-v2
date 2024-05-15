@@ -3,9 +3,9 @@ import { ApolloClient, HttpLink, InMemoryCache} from '@apollo/client';
 const GQLClient = new ApolloClient({
     cache: new InMemoryCache(),
     link: new HttpLink({
-        uri: process.env.API_URL,
+        uri: 'https://wfwg7jrvynfphcqfvnv6jnrhsu.appsync-api.us-east-1.amazonaws.com/graphql',
         headers: {
-          'x-api-key': `${process.env.API_KEY}`,
+          'x-api-key': 'da2-wwgbrb7x6fhe5ox3t5ivyn4ome',
         }
     })
 });

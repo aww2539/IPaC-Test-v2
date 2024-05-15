@@ -171,6 +171,7 @@ input TableIntFilterInput {
 
 input TableStringFilterInput {
   attributeExists: Boolean
+  arrayContains: [String]
   beginsWith: String
   between: [String]
   contains: String

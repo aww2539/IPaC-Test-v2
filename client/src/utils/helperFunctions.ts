@@ -26,11 +26,11 @@ export const filterAndSortData = (
 
 export const getFeaturesBySearch = (search: string, features: Feature[]) => {
     const formattedFeaturesForSearch = features.map((f) => {
-        return {id: f.sid.id, name: f.displayName, keywords: f.epKeywords}
+        return {id: f.id, name: f.displayName, keywords: f.epKeywords}
     })
 
     const matches = formattedFeaturesForSearch.filter((f) => JSON.stringify(f).toLowerCase().includes(search.toLowerCase()))
     const matchIds = matches.map(m => m.id)
 
-    return features.filter((f) => matchIds.includes(f.sid.id))
+    return features.filter((f) => matchIds.includes(f.sid))
 }
