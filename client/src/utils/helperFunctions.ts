@@ -1,36 +1,28 @@
-import { Category, Feature } from "./types"
+import { Feature } from "./types"
 
+export const filterFeaturesBySearch = (search: string, features: Feature[]) => {
+    const filteredFeatures = features.filter((f) => {
+      if (
+        f.displayName.toLowerCase().includes(search) ||
+        f.epKeywords.some((keyword) => keyword.toLowerCase().includes(search))
+      ) {
+        return true;
+      }
+      return false;
+    });
+  
+    return filteredFeatures;
+};
 
-const removeDeletedData = (data: Feature[]) => {
-    const active = data.filter((data) => !data.isDeleted)
-    return active
-}
-
-export const removeDeprecatedData = (data: Category[]) => {
-    const filteredData = data.filter((d) => !JSON.stringify(d).toLowerCase().includes('deprecated'))
-    return filteredData
-}
-
-export const filterAndSortData = (
-    { featureCategories, features }: 
-    {featureCategories: Category[], features: Feature[]}
-    ) => {
-        const currentCategories = removeDeprecatedData(featureCategories)
-        const currentFeatures = removeDeletedData(features)
-
-        currentFeatures.sort((a, b) => a.displayName.localeCompare(b.displayName))
-        currentCategories.sort((a, b) => a.sortOrder - b.sortOrder)
-
-        return { currentCategories, currentFeatures }
-}
-
-export const getFeaturesBySearch = (search: string, features: Feature[]) => {
-    const formattedFeaturesForSearch = features.map((f) => {
-        return {id: f.id, name: f.displayName, keywords: f.epKeywords}
-    })
-
-    const matches = formattedFeaturesForSearch.filter((f) => JSON.stringify(f).toLowerCase().includes(search.toLowerCase()))
-    const matchIds = matches.map(m => m.id)
-
-    return features.filter((f) => matchIds.includes(f.sid))
-}
+// With postgres, a query would be something like this: 
+//
+// SELECT f.id, f.display_name, f.ep_keywords 
+// FROM features f
+// WHERE f.is_deleted = false
+//     AND f.display_name like '%SEARCH_TEXT%'
+//     OR exists (SELECT *
+//               FROM unnest(f.ep_keywords) as ep_keywords
+//               WHERE ep_keywords like '%SEARCH_TEXT%')
+//
+// But AWS AppSync doesn't really like to do that type of functionality with GraphQL without writing a decent amount of custom stuff, 
+// so I'm using this filter function for time purposes

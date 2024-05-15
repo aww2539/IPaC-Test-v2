@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { getFeaturesBySearch } from './utils/helperFunctions';
+import { filterFeaturesBySearch } from './utils/helperFunctions';
 import { CategoriesList } from './Modules/Categories/CategoriesList';
 import { Header } from './Modules/Header/Header';
-import { Box } from '@mui/material';
+import { Box, debounce } from '@mui/material';
 import { CategoryFeatures } from './Modules/CategoryFeatures/CategoryFeatures';
 import { Category, Feature } from './utils/types';
 import { useLazyQuery } from '@apollo/client';
 import { listFeaturesQuery } from './graphql/queries/listFeatures'
-import { useGetCurrentCategories } from './utils/apiManager'
+import { useGetCurrentCategories } from './utils/hooks'
 
 const App = () => {
   const [categories, setCategories] = useState<Category[]>([])
@@ -15,6 +15,7 @@ const App = () => {
   const [featuresByCategory, setFeaturesByCategory] = useState<Feature[]>([])
   const [search, setSearch] = useState<string>('')
   const [searchResults, setSearchResults] = useState<Feature[]>([])
+  const [featuresToSearch, setFeaturesToSearch] = useState<Feature[]>([])
   
   const { categoryData } = useGetCurrentCategories()
 
@@ -25,7 +26,7 @@ const App = () => {
     }
   }, [categoryData])
 
-  const [getAndSetFeaturesByCategory, { loading, error }] = useLazyQuery(listFeaturesQuery, { 
+  const [getAndSetFeaturesByCategory, { error }] = useLazyQuery(listFeaturesQuery, { 
     variables: {
       filter: {
         category_sid: {
@@ -51,34 +52,34 @@ const App = () => {
     getAndSetFeaturesByCategory()
   }, [selectedCategory])
 
-  // probably have to write a custom resolver on appsync to handle array_contains from graphql -> postgres for the ep_keywords field
-  // but basic functionality should be fully swapped over to graphql at that point
-  const [getAndSetFeaturesBySearch] = useLazyQuery(listFeaturesQuery, { 
+  // a debounce would be good with the search
+  const [getAndSetFeaturesBySearch, { data }] = useLazyQuery(listFeaturesQuery, {
     variables: {
-      filter: {
-        display_name: {
-          contains: search
-        }, 
-        or: {
-          ep_keywords: {
-            arrayContains: search
-          }
-        }
-      }, 
       orderBy: {
-        display_name: 'ASC'
-      }
+        display_name: 'ASC',
+      },
     },
     onCompleted: (response) => {
-      setSearchResults(response.listFeatures.features)
+      setFeaturesToSearch(response.listFeatures.features);
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      setFeaturesToSearch(data.listFeatures.features);
     }
-  })
+  }, [data]);
   
   useEffect(() => {
     if (search) {
-      getAndSetFeaturesBySearch()
+      if (featuresToSearch.length) {
+        const filtered = filterFeaturesBySearch(search.toLowerCase(), featuresToSearch);
+        setSearchResults(filtered);
+      } else {
+        getAndSetFeaturesBySearch();
+      }
     }
-  }, [search])
+  }, [search, featuresToSearch]);
 
   return (
     <Box

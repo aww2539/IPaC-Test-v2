@@ -21,12 +21,15 @@ export const CategoryFeatures = ({ selectedCategory, featuresByCategory, search,
                 </Grid>
             )}
 
-            {featuresToDisplay?.map((feature: Feature) => (
-                <Grid item xs={4} key={feature.sid}>
-                    <FeatureCard feature={feature} />
-                </Grid>
-                
-            ))}
+            {featuresToDisplay.length && (
+                featuresToDisplay?.map((feature: Feature) => (
+                    <Grid item xs={4} key={feature.sid}>
+                        <FeatureCard feature={feature} />
+                    </Grid>
+                    
+                ))
+            )}
+
         </Grid>
     )
 }
