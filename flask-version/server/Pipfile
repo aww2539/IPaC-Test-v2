@@ -5,10 +5,15 @@ name = "pypi"
 
 [packages]
 flask = "*"
-flask-restful = "*"
 flask-cors = "*"
+flask-restful = "*"
+psycopg2-binary = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.9"
+
+[scripts]
+dev = "python3 run.py --debug"
