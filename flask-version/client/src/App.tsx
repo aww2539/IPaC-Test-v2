@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react';
 import { filterFeaturesBySearch } from './utils/helperFunctions';
 import { CategoriesList } from './Modules/Categories/CategoriesList';
 import { Header } from './Modules/Header/Header';
-import { Box, debounce } from '@mui/material';
+import { Box } from '@mui/material';
 import { CategoryFeatures } from './Modules/CategoryFeatures/CategoryFeatures';
 import { Category, Feature } from './utils/types';
-import { useLazyQuery } from '@apollo/client';
-import { listFeaturesQuery } from './graphql/queries/listFeatures'
-import { useGetCurrentCategories } from './utils/hooks'
+import { getAndSetCategories, getAndSetFeaturesByCategory } from './utils/apiManager'
 
 const App = () => {
   const [categories, setCategories] = useState<Category[]>([])
@@ -16,70 +14,16 @@ const App = () => {
   const [search, setSearch] = useState<string>('')
   const [searchResults, setSearchResults] = useState<Feature[]>([])
   const [featuresToSearch, setFeaturesToSearch] = useState<Feature[]>([])
-  
-  const { categoryData } = useGetCurrentCategories()
 
   useEffect(() => {
-    if (categoryData) {
-      setCategories(categoryData)
-      setSelectedCategory(categoryData[0])
-    }
-  }, [categoryData])
-
-  const [getAndSetFeaturesByCategory, { error }] = useLazyQuery(listFeaturesQuery, { 
-    variables: {
-      filter: {
-        category_sid: {
-          eq: selectedCategory?.sid
-        }, 
-        is_deleted: {
-          eq: false
-        }
-      }, 
-      orderBy: {
-        display_name: 'ASC'
-      }
-    },
-    onCompleted: (response) => {
-      setFeaturesByCategory(response.listFeatures.features)
-    },
-    onError: () => {
-      console.warn(error)
-    }
-  })
+    getAndSetCategories(setCategories, setSelectedCategory)
+  }, [])
 
   useEffect(() => {
-    getAndSetFeaturesByCategory()
+    if (selectedCategory) {
+      getAndSetFeaturesByCategory(selectedCategory.sid, setFeaturesByCategory)
+    }
   }, [selectedCategory])
-
-  // a debounce would be good with the search
-  const [getAndSetFeaturesBySearch, { data }] = useLazyQuery(listFeaturesQuery, {
-    variables: {
-      orderBy: {
-        display_name: 'ASC',
-      },
-    },
-    onCompleted: (response) => {
-      setFeaturesToSearch(response.listFeatures.features);
-    },
-  });
-
-  useEffect(() => {
-    if (data) {
-      setFeaturesToSearch(data.listFeatures.features);
-    }
-  }, [data]);
-  
-  useEffect(() => {
-    if (search) {
-      if (featuresToSearch.length) {
-        const filtered = filterFeaturesBySearch(search.toLowerCase(), featuresToSearch);
-        setSearchResults(filtered);
-      } else {
-        getAndSetFeaturesBySearch();
-      }
-    }
-  }, [search, featuresToSearch]);
 
   return (
     <Box
