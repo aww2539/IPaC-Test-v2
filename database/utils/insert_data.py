@@ -192,4 +192,3 @@ def insert_all_seed_data(category_sids, feature_sids, categories, features):
     insert_many_categories(categories)
     insert_many_features(features)
     
-    conn.close()

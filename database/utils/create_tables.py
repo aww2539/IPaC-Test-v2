@@ -102,8 +102,6 @@ def create_all_tables():
     create_categories_table()
     create_features_table()
 
-    conn.close()
-
     print("All tables created.")
 
 
