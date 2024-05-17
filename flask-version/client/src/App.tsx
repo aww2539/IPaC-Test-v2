@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
-import { filterFeaturesBySearch } from './utils/helperFunctions';
+import { useCallback, useEffect, useState } from 'react';
 import { CategoriesList } from './Modules/Categories/CategoriesList';
 import { Header } from './Modules/Header/Header';
-import { Box } from '@mui/material';
+import { Box, debounce } from '@mui/material';
 import { CategoryFeatures } from './Modules/CategoryFeatures/CategoryFeatures';
 import { Category, Feature } from './utils/types';
-import { getAndSetCategories, getAndSetFeaturesByCategory } from './utils/apiManager'
+import { getAndSetCategories, getAndSetFeaturesByCategory, getAndSetFeaturesBySearch } from './utils/apiManager'
 
 const App = () => {
   const [categories, setCategories] = useState<Category[]>([])
@@ -13,7 +12,13 @@ const App = () => {
   const [featuresByCategory, setFeaturesByCategory] = useState<Feature[]>([])
   const [search, setSearch] = useState<string>('')
   const [searchResults, setSearchResults] = useState<Feature[]>([])
-  const [featuresToSearch, setFeaturesToSearch] = useState<Feature[]>([])
+
+  const debouncedSearch = useCallback(
+    debounce((search) => {
+      getAndSetFeaturesBySearch(search, setSearchResults);
+    }, 400),
+    []
+  );
 
   useEffect(() => {
     getAndSetCategories(setCategories, setSelectedCategory)
@@ -24,6 +29,12 @@ const App = () => {
       getAndSetFeaturesByCategory(selectedCategory.sid, setFeaturesByCategory)
     }
   }, [selectedCategory])
+
+  useEffect(() => {
+    if (search) {
+      debouncedSearch(search);
+    }
+  }, [search, debouncedSearch]);
 
   return (
     <Box

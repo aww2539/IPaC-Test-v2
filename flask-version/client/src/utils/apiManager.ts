@@ -28,3 +28,14 @@ export const getAndSetFeaturesByCategory = async (categorySid: number, setFeatur
     console.trace(`Error fetching features: ${error}`)
   }
 }
+
+export const getAndSetFeaturesBySearch = async (search: string, setSearchResults: SetState<Feature[]>,) => {
+  try {
+    const res = await fetch(`http://localhost:5000/api/features?search=true&search_text=${search}`)
+    const data = await res.json()
+
+    setSearchResults(data)
+  } catch (error) {
+    console.trace(`Error fetching search features: ${error}`)
+  }
+}

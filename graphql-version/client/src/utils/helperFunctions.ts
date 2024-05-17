@@ -19,10 +19,10 @@ export const filterFeaturesBySearch = (search: string, features: Feature[]) => {
 // SELECT f.id, f.display_name, f.ep_keywords 
 // FROM features f
 // WHERE f.is_deleted = false
-//     AND f.display_name like '%SEARCH_TEXT%'
+//     AND f.display_name ilike '%SEARCH_TEXT%'
 //     OR exists (SELECT *
 //               FROM unnest(f.ep_keywords) as ep_keywords
-//               WHERE ep_keywords like '%SEARCH_TEXT%')
+//               WHERE ep_keywords ilike '%SEARCH_TEXT%')
 //
 // But AWS AppSync doesn't really like to do that type of functionality with GraphQL without writing a decent amount of custom stuff, 
 // so I'm using this filter function for time purposes
