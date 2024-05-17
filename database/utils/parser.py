@@ -43,9 +43,6 @@ def parse_feature_sids():
 def parse_categories():
     for count, jdc in enumerate(json_data_categories, start=1):
         jdc_sid = jdc['sid']
-        # print(type(count))
-        # print(type(jdc.get('sortOrder')))
-        # print(type(jdc_sid.get('id')))
 
         c = Category(
             id = count,
@@ -79,9 +76,6 @@ def parse_features():
         jdf_category_sid = jdf['categorySid']
         category_sid = jdf_category_sid.get('id')
         category_sid_obj = next((pcs for pcs in parsed_category_sids if pcs.id == category_sid), None)
-        # print(len(parsed_category_sids) + count)
-        # for key, value in category_sid_obj.__dict__.items():
-        #     print(f"{key}: {value}")
 
         f = Feature(
             id = count,
@@ -123,29 +117,3 @@ def parse_json():
     parse_feature_sids()
     parse_categories()
     parse_features()
-
-    # for pfs in parsed_feature_sids:
-    #     print("-------------")
-
-    #     for key, value in pfs.__dict__.items():
-    #         print(f"{key}: {value}")
-
-    # for pcs in parsed_category_sids:
-    #     print("-------------")
-
-    #     for key, value in pcs.__dict__.items():
-    #         print(f"{key}:", type(value))
-    #         print(f"{key}: {value}")
-
-    # for f in parsed_features:
-    #     print("-------------")
-
-    #     for key, value in f.__dict__.items():
-    #         print(f"{key}: {value}")
-
-    # for c in parsed_categories:
-    #     print("-------------")
-
-    #     for key, value in c.__dict__.items():
-    #         print(f"{key}:", type(value))
-    #         print(f"{key}: {value}")

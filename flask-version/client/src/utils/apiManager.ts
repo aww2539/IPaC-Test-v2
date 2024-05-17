@@ -11,8 +11,8 @@ export const getAndSetCategories = async (
     const res = await fetch('http://localhost:5000/api/categories')
     const data = await res.json()
 
-    setSelectedCategory(data[0])
     setCategories(data)
+    setSelectedCategory(data[0])
   } catch (error) {
     console.trace(`Error fetching categories: ${error}`)
   }
