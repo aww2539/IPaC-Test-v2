@@ -6,7 +6,7 @@ const GQLClient = new ApolloClient({
     link: new HttpLink({
         uri: 'https://wfwg7jrvynfphcqfvnv6jnrhsu.appsync-api.us-east-1.amazonaws.com/graphql',
         headers: {
-          'x-api-key': 'da2-wwgbrb7x6fhe5ox3t5ivyn4ome',
+          'x-api-key': 'da2-cyxeysrborcengk3dflk2j5xjm',
         }
     })
 });
