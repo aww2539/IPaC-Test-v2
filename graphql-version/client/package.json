@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.6",
     "graphql": "^16.8.1",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.23",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1"
